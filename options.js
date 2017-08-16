@@ -1,28 +1,43 @@
 
-const saveText = "Save";
-const settingsActiveText = "Settings active";
+const saveText = 'Save';
+const settingsActiveText = 'Settings active';
 
 var storedValues;
+
+function enableSave() {
+	document.querySelector('#submitbutton').textContent = saveText;
+	document.querySelector('#submitbutton').style.fontStyle = 'normal';
+	document.querySelector('#submitbutton').disabled = false;
+	document.querySelector('#revert').style.visibility = 'visible';
+}
+
+function disableSave() {
+	document.querySelector('#submitbutton').textContent = settingsActiveText;
+	document.querySelector('#submitbutton').style.fontStyle = 'italic';
+	document.querySelector('#submitbutton').disabled = true;
+	document.querySelector('#revert').style.visibility = 'hidden';
+}
 
 function updateLocalStored() {
 	browser.storage.local.get().then(function(v) {
 		storedValues = v;
 	});
-	document.querySelector('#submitbutton').textContent = settingsActiveText;
-	document.querySelector('#submitbutton').style.fontStyle = "italic";
-	document.querySelector('#submitbutton').disabled = true;
+	disableSave();
 }
 
 function saveOptions(e) {
 	e.preventDefault();
 
 	var ntumod = document.querySelector('#newtaburl').value;
-	if (!(ntumod.toLowerCase().startsWith("about:")) && !(ntumod.toLowerCase().startsWith("http://") ||
-	      ntumod.toLowerCase().startsWith("https://"))) {
+	if (ntumod === '') {
+		ntumod = 'about:blank';
+		document.querySelector('#newtaburl').value = ntumod;
+	} else if (!(ntumod.toLowerCase().startsWith('about:')) &&
+	           !(ntumod.toLowerCase().startsWith('http://') ||
+	             ntumod.toLowerCase().startsWith('https://'))) {
 		ntumod = "http://" + ntumod;
 		document.querySelector('#newtaburl').value = ntumod;
 	}
-
 	browser.storage.local.set({
 		newtaburl: ntumod,
 		active: document.querySelector('#active').checked
@@ -35,7 +50,7 @@ function saveOptions(e) {
 function restoreOptions() {
 	// Set stored values or defaults to options page
 	function setNTU(result) {
-      	document.querySelector('#newtaburl').value = result.newtaburl || 'about:home';
+      	document.querySelector('#newtaburl').value = result.newtaburl || 'about:blank';
     }
 
 	function setActive(result) {
@@ -68,20 +83,28 @@ function restoreOptions() {
 }
 
 function modSave(e) {
+	if (e.target.value.toLowerCase().startsWith('file:')) {
+		document.querySelector('#warning').textContent = 'Hold up! WebExtensions don\'t currently support \'file:///\' schemes :(';
+	} else {
+		document.querySelector('#warning').textContent = '';
+	}
 	if (((e.target.type === 'checkbox') &&
 	     (storedValues[e.target.id] !== e.target.checked)) ||
 	    ((e.target.type === 'text') &&
 	     (storedValues[e.target.id] !== e.target.value))) {
-			document.querySelector('#submitbutton').textContent = saveText;
-			document.querySelector('#submitbutton').style.fontStyle = "normal";
-			document.querySelector('#submitbutton').disabled = false;
+		enableSave();
 	} else {
-			document.querySelector('#submitbutton').textContent = settingsActiveText;
-			document.querySelector('#submitbutton').style.fontStyle = "italic";
-			document.querySelector('#submitbutton').disabled = true;
+		disableSave();
 	}
 }
 
+function cancelEdit(e) {
+	document.querySelector('#newtaburl').value = storedValues['newtaburl'] || 'about:blank';
+	document.querySelector('#revert').style.visibility = 'hidden';
+	disableSave();
+}
+
 document.addEventListener('DOMContentLoaded', restoreOptions);
-document.querySelector('#options').addEventListener('input', modSave)
+document.querySelector('#options').addEventListener('input', modSave);
 document.querySelector('form').addEventListener('submit', saveOptions);
+document.querySelector('#revert').addEventListener('click', cancelEdit);

@@ -35,7 +35,15 @@
             font-size: 14px;
             color: #777;
         }
+        #warningbox {
+            height: 25px;
+            margin-bottom: 5px;
+        }
+        #warning {
+            color: red;
+        }
         #options {
+            position: relative;
             width: 600px;
         }
         fieldset {
@@ -62,6 +70,20 @@
             color: #cfcfcf;
             background-color: #222;
         }
+        #revert {
+            position: absolute;
+            border: 1px solid #555;
+            background: #222;
+            color: red;
+            right: -20px;
+            top: 8px;
+            width: 24px;
+            height: 20px;
+            padding-bottom: 4px;
+            text-align: center;
+            line-height: 18px;
+            font-size: 16px;
+        }
         #submit {
             text-align: center;
         }
@@ -81,7 +103,6 @@
         button[type=submit]:active:enabled {
             background-color: #222;
         }
-
         .toggle input[type=checkbox] {
             -webkit-appearance: none;
             flex: none;
@@ -109,13 +130,17 @@
                 <div id="heading">
                     <img src="icons/icon64.png">
                     <p>Newtab.url Configuration</p>
-                    <p id="examples"><em>Built in:<br>about:home</em></p>
+                    <p id="examples"><em>Built in:<br>about:home<br>about:blank</em></p>
+                    <div id="warningbox">
+                        <b><p id="warning"></p></b>
+                    </div>
                 </div>
                 <form id="options">
+                    <div id="revert">⃠</div>
                     <fieldset>
                         <div>
                             <label>browser.newtab.url</label>
-                            <input type="text" name="newtaburl" id="newtaburl" placeholder="about:newtab" autocomplete="off">
+                            <input type="text" name="newtaburl" id="newtaburl" placeholder="about:blank" autocomplete="off">
                         </div>
                         <div class="toggle">
                             <label>Attempt to make page active?</label>
