@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html>
+    <title>Newtab.url</title>
+    <head>
+        <meta charset="utf-8">
+        <link rel="shortcut icon" href="/icons/icon48.png" />
+        <style type="text/css">
+        body, html {
+            height: 100%;
+            font-family: "Open Sans", "Segoe UI", sans-serif;
+            color: #cfcfcf;
+            background-color: #222;
+        }
+        #wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        #center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 800px;
+            height: 400px;
+            border: 2px solid #555;
+            background-color: #111;
+        }
+        #heading {
+            text-align: center;
+        }
+        #examples {
+            font-size: 14px;
+            color: #777;
+        }
+        #options {
+            width: 600px;
+        }
+        fieldset {
+            border: None;
+        }
+        fieldset div {
+            display: flex;
+            align-items: center;
+            height: 30px;
+        }
+        label {
+            width: 250px;
+            padding-right: 20px;
+        }
+        input {
+            flex: 1 1 auto;
+        }
+        input[type=text] {
+            border: 1px solid #555;
+            padding-left: 5px;
+            padding-bottom: 3px;
+            height: 20px;
+            font-size: 14px;
+            color: #cfcfcf;
+            background-color: #222;
+        }
+        #submit {
+            text-align: center;
+        }
+        button[type=submit] {
+            width: 200px;
+            height: 30px;
+            background-color: #222;
+            color: #cfcfcf;
+            border: 1px solid #555;
+            font-size: 14px;
+            padding-bottom: 2px;
+        }
+        button[type=submit]:hover:enabled{
+            background-color: #444;
+        }
+
+        button[type=submit]:active:enabled {
+            background-color: #222;
+        }
+
+        .toggle input[type=checkbox] {
+            -webkit-appearance: none;
+            flex: none;
+            margin-left: 0px;
+            width: 20px;
+            height: 20px;
+            border-radius: 0px;
+            border: 1px solid #555;
+            padding-left: 0px;
+            padding-top: 0px;
+            text-align: center;
+        }
+        .toggle input[type=checkbox]:checked:after {
+            content: '\2715';
+            font-size: 23px;
+            line-height: 14px;
+            color: #cfcfcf;
+        }
+        </style>
+    </head>
+
+    <body>
+        <div id="wrapper">
+            <div id="center">
+                <div id="heading">
+                    <img src="icons/icon64.png">
+                    <p>Newtab.url Configuration</p>
+                    <p id="examples"><em>Built in:<br>about:home</em></p>
+                </div>
+                <form id="options">
+                    <fieldset>
+                        <div>
+                            <label>browser.newtab.url</label>
+                            <input type="text" name="newtaburl" id="newtaburl" placeholder="about:newtab" autocomplete="off">
+                        </div>
+                        <div class="toggle">
+                            <label>Attempt to make page active?</label>
+                            <input type="checkbox" name="Active" id="active">
+                        </div>
+                        <!--<div class="toggle">
+                            <label>Sync home to new tab page?</label>
+                            <input type="checkbox" name="Sync" id="sync">
+                        </div>-->
+                    </fieldset>
+                    <div id="submit">
+                        <button type="submit" id="submitbutton">Save</button>
+                    </div>
+                </form>
+                <script src="options.js"></script>
+            </div>
+        </div>
+    </body>
+</html>

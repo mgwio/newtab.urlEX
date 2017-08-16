@@ -1,0 +1,39 @@
+{
+    "manifest_version": 2,
+    "name": "newtab.urlEX",
+    "version": "0.1.0",
+
+    "developer": {
+        "name": "M Wu",
+        "url": "https://www.github.com/mgwio"
+    },
+
+    "description": "Restores custom new-tab functionality (\"browser.newtab.url\"-like)",
+
+    "applications": {
+      "gecko": {
+        "id": "@newtaburlex",
+        "strict_min_version": "54.0"
+      }
+    },
+
+    "icons": {
+        "48": "icons/icon48.png",
+        "64": "icons/icon64.png"
+    },
+
+    "background": {
+        "scripts": ["tabmon.js"]
+    },
+
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": true
+    },
+
+    "chrome_url_overrides": {
+        "newtab": "./nt.html"
+    },
+
+    "permissions": ["storage", "tabs"]
+}
