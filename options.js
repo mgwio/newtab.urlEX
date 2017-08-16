@@ -8,7 +8,7 @@ function updateLocalStored() {
 	browser.storage.local.get().then(function(v) {
 		storedValues = v;
 	});
-	document.querySelector('#submitbutton').innerText = settingsActiveText;
+	document.querySelector('#submitbutton').textContent = settingsActiveText;
 	document.querySelector('#submitbutton').style.fontStyle = "italic";
 	document.querySelector('#submitbutton').disabled = true;
 }
@@ -76,7 +76,7 @@ function modSave(e) {
 			document.querySelector('#submitbutton').style.fontStyle = "normal";
 			document.querySelector('#submitbutton').disabled = false;
 	} else {
-			document.querySelector('#submitbutton').innerText = settingsActiveText;
+			document.querySelector('#submitbutton').textContent = settingsActiveText;
 			document.querySelector('#submitbutton').style.fontStyle = "italic";
 			document.querySelector('#submitbutton').disabled = true;
 	}
