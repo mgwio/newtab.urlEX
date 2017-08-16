@@ -1,6 +1,6 @@
 
 const saveText = "Save";
-const settingsActiveText = "<i>Settings active</i>";
+const settingsActiveText = "Settings active";
 
 var storedValues;
 
@@ -8,7 +8,8 @@ function updateLocalStored() {
 	browser.storage.local.get().then(function(v) {
 		storedValues = v;
 	});
-	document.querySelector('#submitbutton').innerHTML = settingsActiveText;
+	document.querySelector('#submitbutton').innerText = settingsActiveText;
+	document.querySelector('#submitbutton').style.fontStyle = "italic";
 	document.querySelector('#submitbutton').disabled = true;
 }
 
@@ -72,9 +73,11 @@ function modSave(e) {
 	    ((e.target.type === 'text') &&
 	     (storedValues[e.target.id] !== e.target.value))) {
 			document.querySelector('#submitbutton').textContent = saveText;
+			document.querySelector('#submitbutton').style.fontStyle = "normal";
 			document.querySelector('#submitbutton').disabled = false;
 	} else {
-			document.querySelector('#submitbutton').innerHTML = settingsActiveText;
+			document.querySelector('#submitbutton').innerText = settingsActiveText;
+			document.querySelector('#submitbutton').style.fontStyle = "italic";
 			document.querySelector('#submitbutton').disabled = true;
 	}
 }
