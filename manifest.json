@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "newtab.urlEX",
-    "version": "0.1.3",
+    "version": "0.1.4",
 
     "developer": {
         "name": "M Wu",
@@ -35,5 +35,5 @@
         "newtab": "./nt.html"
     },
 
-    "permissions": ["storage", "tabs"]
+    "permissions": ["storage", "tabs", "sessions"]
 }
