@@ -19,7 +19,7 @@ function disableSave() {
 }
 
 function updateLocalStored() {
-	browser.storage.local.get().then(function(v) {
+	browser.storage.local.get().then((v) => {
 		storedValues = v;
 	});
 	disableSave();
