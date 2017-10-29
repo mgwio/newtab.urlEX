@@ -33,8 +33,9 @@ function saveOptions(e) {
 		ntumod = 'about:blank';
 		document.querySelector('#newtaburl').value = ntumod;
 	} else if (!(ntumod.toLowerCase().startsWith('about:')) &&
-	           !(ntumod.toLowerCase().startsWith('http://') ||
-	             ntumod.toLowerCase().startsWith('https://'))) {
+	           !(ntumod.toLowerCase().startsWith("chrome:")) &&
+	           !(ntumod.toLowerCase().startsWith('http:') ||
+	             ntumod.toLowerCase().startsWith('https:'))) {
 		ntumod = "http://" + ntumod;
 		document.querySelector('#newtaburl').value = ntumod;
 	}
