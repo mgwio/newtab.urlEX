@@ -35,5 +35,5 @@
         "newtab": "./nt.html"
     },
 
-    "permissions": ["storage", "tabs", "sessions"]
+    "permissions": ["storage", "tabs", "sessions", "browserSettings"]
 }

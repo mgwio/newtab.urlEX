@@ -1,111 +1,134 @@
 
-const saveText = 'Save';
-const settingsActiveText = 'Settings active';
+const SAVE_TEXT = 'Save';
+const SETTINGS_ACTIVE = 'Settings active';
+const FILE_WARNING = `Hold up! WebExtensions don't currently support\
+'file:///' schemes :(`;
 
-var storedValues;
-
-function enableSave() {
-	document.querySelector('#submitbutton').textContent = saveText;
-	document.querySelector('#submitbutton').style.fontStyle = 'normal';
-	document.querySelector('#submitbutton').disabled = false;
-	document.querySelector('#revert').style.visibility = 'visible';
-}
-
-function disableSave() {
-	document.querySelector('#submitbutton').textContent = settingsActiveText;
-	document.querySelector('#submitbutton').style.fontStyle = 'italic';
-	document.querySelector('#submitbutton').disabled = true;
-	document.querySelector('#revert').style.visibility = 'hidden';
-}
-
-function updateLocalStored() {
-	browser.storage.local.get().then((v) => {
-		storedValues = v;
-	});
-	disableSave();
-}
-
-function saveOptions(e) {
-	e.preventDefault();
-
-	var ntumod = document.querySelector('#newtaburl').value;
-	if (ntumod === '') {
-		ntumod = 'about:blank';
-		document.querySelector('#newtaburl').value = ntumod;
-	} else if (!(ntumod.toLowerCase().startsWith('about:')) &&
-	           !(ntumod.toLowerCase().startsWith("chrome:")) &&
-	           !(ntumod.toLowerCase().startsWith('http:') ||
-	             ntumod.toLowerCase().startsWith('https:'))) {
-		ntumod = "http://" + ntumod;
-		document.querySelector('#newtaburl').value = ntumod;
-	}
-	browser.storage.local.set({
-		newtaburl: ntumod,
-		active: document.querySelector('#active').checked
-		// sync: document.querySelector('#sync').checked
-    });
-
-	updateLocalStored();
-}
-
-function restoreOptions() {
-	// Set stored values or defaults to options page
-	function setNTU(result) {
-      	document.querySelector('#newtaburl').value = result.newtaburl || 'about:blank';
-    }
-
-	function setActive(result) {
-		if (result.active != null) {
-	      	document.querySelector('#active').checked = result.active;
+const optionsHandler = {
+	async enableSave() {
+		document.querySelector('#submitbutton').textContent = SAVE_TEXT;
+		document.querySelector('#submitbutton').style.fontStyle = 'normal';
+		document.querySelector('#submitbutton').disabled = false;
+		if (document.querySelector('#ntu').value !== optionsHandler.storedValues.ntu && !document.querySelector('#sync').checked) {
+			document.querySelector('#revert').style.visibility = 'visible';
 		} else {
-	    	document.querySelector('#active').checked = true;
+			document.querySelector('#revert').style.visibility = 'hidden';
 		}
-    }
+	},
 
-	// function setSync(result) {
- //      	document.querySelector('#sync').checked = result.sync || false;
- //    }
+	async disableSave() {
+		document.querySelector('#submitbutton').textContent = SETTINGS_ACTIVE;
+		document.querySelector('#submitbutton').style.fontStyle = 'italic';
+		document.querySelector('#submitbutton').disabled = true;
+		document.querySelector('#revert').style.visibility = 'hidden';
+	},
 
-	function onError(error) {
-    	console.log(`error: ${error}`);
-    }
+	async updateLocalStored() {
+		let ntu = await browser.storage.local.get();
+		optionsHandler.storedValues = ntu;
+		optionsHandler.disableSave();
+	},
 
-    // Check storage for current values
-	var getNTU = browser.storage.local.get('newtaburl');
-	getNTU.then(setNTU, onError);
+	async saveOptions(e) {
+		e.preventDefault();
+		let ntumod = document.querySelector('#ntu').value;
+		ntumod = await optionsHandler.fixURL(ntumod);
+		document.querySelector('#ntu').value = ntumod;
+		await browser.storage.local.set({
+			//newtaburl: {
+				ntu: ntumod,
+				active: document.querySelector('#active').checked,
+				sync: document.querySelector('#sync').checked
+			//}
+	    });
+		await optionsHandler.updateLocalStored();
+	},
 
-	var active = browser.storage.local.get('active');
-	active.then(setActive, onError);
+	async fixURL(url) {
+		let fixedUrl;
+		if (!url) {
+			fixedUrl = 'about:home';
+		} else if (
+			(url.toLowerCase().startsWith('about:')) ||
+			(url.toLowerCase().startsWith('chrome:'))
+		) {
+			fixedUrl = url;
+		} else {
+			let validUrl;
+			try {
+				fixedUrl = new URL(url).href;
+			} catch (err) {
+				console.error(err);
+				if (!fixedUrl || fixedUrl.protocol === null) {
+					fixedUrl = new URL('http://' + url).href;
+				}
+			}
+		}
+		return fixedUrl;
+	},
 
-	// var sync = browser.storage.local.get('sync');
-	// sync.then(setSync, onError);
+	async getUserHome() {
+		let home = await browser.browserSettings.homepageOverride.get({});
+		home = await optionsHandler.fixURL(home.value.split("|")[0].trim());
+		return home;
+	},
 
-	updateLocalStored();
-}
+	async restoreOptions() {
+		try {
+			let newtaburl = await browser.storage.local.get();
+			let syncing = document.querySelector('#sync').checked = newtaburl.sync || false;
+			let ntuField = document.querySelector('#ntu');
+			ntuField.disabled = syncing;
+			if (syncing) {
+				let home = await optionsHandler.getUserHome();
+				ntuField.value = home;
+			} else {
+				ntuField.value = newtaburl.ntu || 'about:home';
+			}
+			document.querySelector('#active').checked = newtaburl.active || false;
+		} catch (err) {
+			console.error(err);
+		}
+		await optionsHandler.updateLocalStored();
+	},
 
-function modSave(e) {
-	if (e.target.value.toLowerCase().startsWith('file:')) {
-		document.querySelector('#warning').textContent = 'Hold up! WebExtensions don\'t currently support \'file:///\' schemes :(';
-	} else {
-		document.querySelector('#warning').textContent = '';
+	async modSave(e) {
+		if (e.target.value.toLowerCase().startsWith('file:')) {
+			document.querySelector('#warning').textContent = FILE_WARNING;
+		} else {
+			document.querySelector('#warning').textContent = '';
+		}
+		if (e.target.id === 'sync') {
+			let ntuField = document.querySelector('#ntu');
+			ntuField.disabled = e.target.checked;
+			if (e.target.checked) {
+				let userHome = await optionsHandler.getUserHome();
+				ntuField.value = userHome;
+			} else {
+				ntuField.value = optionsHandler.storedValues.ntu;
+			}
+		}
+		let ntuField = document.querySelector('#ntu');
+		let activeField = document.querySelector('#active');
+		let syncField = document.querySelector('#sync');
+		if (ntuField.value === optionsHandler.storedValues.ntu &&
+		    activeField.checked == optionsHandler.storedValues.active &&
+		    syncField.checked == optionsHandler.storedValues.sync) {
+			optionsHandler.disableSave();
+		} else {
+			optionsHandler.enableSave();
+		}
+	},
+
+	async cancelEdit(e) {
+		document.querySelector('#ntu').value = optionsHandler.storedValues.ntu || 'about:blank';
+		document.querySelector('#revert').style.visibility = 'hidden';
+		optionsHandler.disableSave();
 	}
-	if (((e.target.type === 'checkbox') &&
-	     (storedValues[e.target.id] !== e.target.checked)) ||
-	    ((e.target.type === 'text') &&
-	     (storedValues[e.target.id] !== e.target.value))) {
-		enableSave();
-	} else {
-		disableSave();
-	}
+
 }
 
-function cancelEdit(e) {
-	document.querySelector('#newtaburl').value = storedValues['newtaburl'] || 'about:blank';
-	document.querySelector('#revert').style.visibility = 'hidden';
-	disableSave();
-}
-
-document.addEventListener('DOMContentLoaded', restoreOptions);
-document.querySelector('#options').addEventListener('input', modSave);
-document.querySelector('form').addEventListener('submit', saveOptions);
-document.querySelector('#revert').addEventListener('click', cancelEdit);
+document.addEventListener('DOMContentLoaded', optionsHandler.restoreOptions);
+document.querySelector('#options').addEventListener('input', optionsHandler.modSave);
+document.querySelector('form').addEventListener('submit', optionsHandler.saveOptions);
+document.querySelector('#revert').addEventListener('click', optionsHandler.cancelEdit);

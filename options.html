@@ -23,7 +23,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 800px;
+            min-width: 650px;
+            max-width: 650px;
             height: 400px;
             border: 2px solid #555;
             background-color: #111;
@@ -69,6 +70,9 @@
             font-size: 14px;
             color: #cfcfcf;
             background-color: #222;
+        }
+        input[type=text]:disabled {
+            color: #777;
         }
         #revert {
             position: absolute;
@@ -140,16 +144,16 @@
                     <fieldset>
                         <div>
                             <label>browser.newtab.url</label>
-                            <input type="text" name="newtaburl" id="newtaburl" placeholder="about:blank" autocomplete="off">
+                            <input type="text" name="newtaburl" id="ntu" placeholder="about:blank" autocomplete="off">
                         </div>
                         <div class="toggle">
                             <label>Attempt to make page active?</label>
                             <input type="checkbox" name="Active" id="active">
                         </div>
-                        <!--<div class="toggle">
-                            <label>Sync home to new tab page?</label>
+                        <div class="toggle">
+                            <label>Sync new tab page to home?</label>
                             <input type="checkbox" name="Sync" id="sync">
-                        </div>-->
+                        </div>
                     </fieldset>
                     <div id="submit">
                         <button type="submit" id="submitbutton">Save</button>
