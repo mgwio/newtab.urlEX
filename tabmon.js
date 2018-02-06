@@ -3,7 +3,7 @@ const newtaburlEX = {
 	handleInstall(details) {
 	    if (details.reason === 'update') {
 	    	browser.tabs.create({
-	    		url: "https://addons.mozilla.org/en-US/firefox/addon/newtab-urlex"
+	    		url: "https://github.com/mgwio/newtab.urlEX/blob/master/update3.0.MD"
 	    	});
 	    }
 	},
