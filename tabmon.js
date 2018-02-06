@@ -1,4 +1,4 @@
-
+const bookmarknav = 'bookmarks.html';
 const newtaburlEX = {
 	async idleCaptive(newtab) {
     	browser.tabs.onUpdated.addListener(newtaburlEX.forward);
@@ -32,10 +32,10 @@ const newtaburlEX = {
 
 	async getForwardUrl() {
 		let newtaburl = await browser.storage.local.get();
-		if (newtaburl.ntu === null) {
-			return 'about:blank';
+		if (!Object.keys(newtaburl).length || newtaburl.ntu === null) {
+			return bookmarknav;
 		} else {
-			return newtaburl.ntu;
+			return (newtaburl.usetype === 'usebookmark') ? bookmarknav : newtaburl.ntu;
 		}
 	}
 };

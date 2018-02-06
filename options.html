@@ -10,7 +10,10 @@
             height: 100%;
             font-family: "Open Sans", "Segoe UI", sans-serif;
             color: #cfcfcf;
-            background-color: #222;
+            background: #222;
+        }
+        a {
+            color: #92bfbf;
         }
         #wrapper {
             display: flex;
@@ -23,11 +26,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-width: 650px;
-            max-width: 650px;
-            height: 400px;
-            border: 2px solid #555;
-            background-color: #111;
+            min-width: 700px;
+            max-width: 700px;
+            height: 450px;
+            border: 2px solid #ee997f;
+            background-color: #282828;
         }
         #heading {
             text-align: center;
@@ -38,14 +41,25 @@
         }
         #warningbox {
             height: 25px;
-            margin-bottom: 5px;
+            margin-bottom: -20px;
         }
         #warning {
+            font-size: 1em;
+            font-weight: normal;
             color: red;
+        }
+        #pickone:before {
+            content: '◄';
+            margin-right: 5px;
+        }
+        #pickone {
+            position: relative;
+            top: 47px;
+            left: 140px;
         }
         #options {
             position: relative;
-            width: 600px;
+            width: 650px;
         }
         fieldset {
             border: None;
@@ -56,8 +70,11 @@
             height: 30px;
         }
         label {
-            width: 250px;
-            padding-right: 20px;
+            width: 320px;
+        }
+        .ntusubopt > label {
+            padding-left: 30px;
+            width: 290px;
         }
         input {
             flex: 1 1 auto;
@@ -80,7 +97,7 @@
             background: #222;
             color: red;
             right: -20px;
-            top: 8px;
+            top: 68px;
             width: 24px;
             height: 20px;
             padding-bottom: 4px;
@@ -107,7 +124,8 @@
         button[type=submit]:active:enabled {
             background-color: #222;
         }
-        .toggle input[type=checkbox] {
+        .toggle input[type=checkbox],
+        input[type=radio] {
             -webkit-appearance: none;
             flex: none;
             margin-left: 0px;
@@ -139,20 +157,29 @@
                         <b><p id="warning"></p></b>
                     </div>
                 </div>
+                <div id="pickone">Choose one of these :)</div>
                 <form id="options">
                     <div id="revert">⃠</div>
                     <fieldset>
-                        <div>
+                        <div class="toggle">
+                            <label>Use bookmark browser? <a href="bookmarks.html">(preview link)</a></label>
+                            <input type="radio" name="NtuType" id="usebookmark" value="usebookmark">
+                        </div>
+                        <div class="toggle">
+                            <label>Or custom page? (browser.newtab.url)</label>
+                            <input type="radio" name="NtuType" id="usentu" value="usentu">
+                        </div>
+                        <div class='subopt usentusubopt'>
                             <label>browser.newtab.url</label>
-                            <input type="text" name="newtaburl" id="ntu" placeholder="about:blank" autocomplete="off">
+                            <input type="text" name="newtaburl" id="ntu" placeholder="about:blank" autocomplete="off" disabled>
                         </div>
-                        <div class="toggle">
+                        <div class="toggle subopt usentusubopt">
                             <label>Attempt to make page active?</label>
-                            <input type="checkbox" name="Active" id="active">
+                            <input type="checkbox" name="Active" id="active" disabled>
                         </div>
-                        <div class="toggle">
+                        <div class="toggle subopt usentusubopt">
                             <label>Sync new tab page to home?</label>
-                            <input type="checkbox" name="Sync" id="sync">
+                            <input type="checkbox" name="Sync" id="sync" disabled>
                         </div>
                     </fieldset>
                     <div id="submit">
