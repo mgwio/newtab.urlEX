@@ -1,5 +1,13 @@
 const bookmarknav = 'bookmarks.html';
 const newtaburlEX = {
+	handleInstall(details) {
+	    if (details.reason === 'update') {
+	    	browser.tabs.create({
+	    		url: "https://addons.mozilla.org/en-US/firefox/addon/newtab-urlex"
+	    	});
+	    }
+	},
+
 	async idleCaptive(newtab) {
     	browser.tabs.onUpdated.addListener(newtaburlEX.forward);
 	},
@@ -40,4 +48,5 @@ const newtaburlEX = {
 	}
 };
 
+browser.runtime.onInstalled.addListener(newtaburlEX.handleInstall);
 browser.tabs.onCreated.addListener(newtaburlEX.idleCaptive);
