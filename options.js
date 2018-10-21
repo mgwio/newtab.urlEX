@@ -35,7 +35,11 @@ const optionsHandler = {
 		sync: false
 	},
 	async updateLocalStored() {
-		let ntu = await browser.storage.local.get();
+		try {
+			let ntu = await browser.storage.local.get();
+		} catch (e) {
+			ntu = this.storedValues;
+		}
 		Object.assign(optionsHandler.storedValues, ntu);
 		optionsHandler.disableSave();
 	},

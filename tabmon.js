@@ -11,6 +11,7 @@ async function tabComms (p) {
                 closed[0].tab.sessionId.toString()
             );
         }
+        p.disconnect();
 	}
 	p.onMessage.addListener(expungeClosedTab);
 }

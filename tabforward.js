@@ -7,7 +7,12 @@ const newtaburlEX = {
     async forward() {
         let thisTab = await browser.tabs.getCurrent();
         let nturl = await newtaburlEX.getForwardUrl();
-        let ntu = await browser.storage.local.get();
+        let ntu = {active: true}
+        try {
+            ntu = await browser.storage.local.get();
+        } catch (e) {
+            // error
+        }
         if (ntu.active && !(nturl === bookmarknav)) {
             await newtaburlEX.activeForward(thisTab, nturl);
         } else {
@@ -17,7 +22,7 @@ const newtaburlEX = {
 
     async activeForward(thisTab, target) {
         let comms = await browser.runtime.connect();
-        let blah = await browser.tabs.create({
+        let nt = await browser.tabs.create({
             url: target
         });
         comms.postMessage({tabId: thisTab.id});
@@ -31,7 +36,12 @@ const newtaburlEX = {
     },
 
     async getForwardUrl() {
-        let newtaburl = await browser.storage.local.get();
+        let newtaburl = {}
+        try {
+            let newtaburl = await browser.storage.local.get();
+        } catch (e) {
+            // error
+        }
         if (!Object.keys(newtaburl).length || newtaburl.ntu === null) {
             return bookmarknav;
         } else {
